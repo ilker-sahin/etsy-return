@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-4Ib0ZwDRnRaMmGpEtlhutEyt7DqD21kY7dFeATE7vwI='; base-uri 'none'; form-action 'none'">
+<title>Etsy sign-in code</title>
+<style>
+  :root { color-scheme: light dark; --bg: #fbfaf8; --fg: #1d1b19; --muted: #6b665f; --box: #ffffff; --line: #ddd8d0; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #181716; --fg: #f1eee9; --muted: #a7a199; --box: #22201e; --line: #3a3733; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 640px; margin: 48px auto; padding: 0 16px; }
+  h1 { font-size: 22px; margin: 0 0 8px; }
+  p { color: var(--muted); margin: 0 0 16px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 96px; padding: 12px; font: 14px/1.4 ui-monospace, Menlo, monospace;
+             background: var(--box); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; resize: vertical; }
+  button { margin-top: 12px; padding: 8px 16px; font: inherit; border-radius: 8px; border: 1px solid var(--line); background: var(--box); color: var(--fg); cursor: pointer; }
+  .small { font-size: 13px; margin-top: 24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">Etsy sign-in code</h1>
+  <p id="lead">Copy the whole box below and paste it into Erebor's Connect Etsy step 2. It is used once and expires in a few minutes.</p>
+  <textarea id="out" readonly aria-label="Return address to paste into Erebor"></textarea>
+  <button id="copy" type="button">Copy</button>
+  <p class="small">This page only shows what Etsy put in its own address. It sends nothing anywhere, loads nothing and keeps nothing.
+    Close it after copying.</p>
+</main>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var out = document.getElementById('out');
+  var code = params.get('code'), state = params.get('state'), error = params.get('error');
+  if (error) {
+    document.getElementById('title').textContent = 'Etsy did not give a code';
+    document.getElementById('lead').textContent = 'Etsy answered: ' + error + '. Start again from Erebor’s Connect Etsy step 1.';
+    out.value = '';
+  } else if (code && state) {
+    out.value = window.location.href;
+  } else {
+    document.getElementById('lead').textContent = 'There is no code in this address. Open the link from Erebor’s Connect Etsy step 1.';
+  }
+  document.getElementById('copy').addEventListener('click', function () {
+    out.select();
+    if (navigator.clipboard) { navigator.clipboard.writeText(out.value); } else { document.execCommand('copy'); }
+  });
+  history.replaceState(null, '', window.location.pathname);
+})();
+</script>
+</body>
+</html>
